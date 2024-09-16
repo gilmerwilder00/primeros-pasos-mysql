@@ -320,3 +320,123 @@ values (
 --8. Haz una consulta simple de los datos de la tabla ventas y verifica que se presente de la siguiente manera:
 
 select * from ventas;
+
+--SELECT avanzado
+
+--Ejercicios: Cláusula DISTINCT
+
+--1. Lista los nombres de los empleados sin duplicados
+
+select  DISTINCT nombre from empleados;
+
+--2. Obtén una lista de correos electrónicos únicos de todos los empleados.
+
+select  DISTINCT correo_electronico from empleados;
+
+--3. Encuentra la lista de edades distintas entre los empleados.
+
+select DISTINCT edad from empleados;
+
+
+--Ejercicios: Operadores relacionales
+
+--1. Muestra los nombres de los empleados que tienen un salario superior a $3200.
+select * 
+from empleados e
+where e.salario > 3200;
+
+--2. Obtén una lista de empleados que tienen 28 años de edad.
+select * 
+from empleados e
+where e.edad =28;
+
+--3. Lista a los empleados cuyos salarios sean menores a $2700.
+select * 
+from empleados e 
+where e.salario < 2700;
+
+--4. Encuentra todas las ventas donde la cantidad de productos vendidos sea mayor que 2.
+
+select * 
+from ventas v 
+where v.cantidad > 2;
+
+--5. Muestra las ventas donde el precio unitario sea igual a $480.00.
+
+select * 
+from ventas v   
+where v.precio_unitario = 480.00;
+
+--6. Obtén una lista de ventas donde el monto total sea menor que $1000.00.
+
+select * 
+from ventas v   
+where v.monto_total < 1000.00;
+
+--7. Encuentra las ventas realizadas por el empleado con el ID 1.
+
+select * 
+from ventas v  
+where empleado_id = 1;
+
+-- Ejercicios: Operadores lógicos
+
+--1. Muestra los nombres de los empleados que trabajan en el Departamento 1 y tienen un salario superior a $3000.
+
+select e.nombre
+from empleados e
+where e.departamento_id = 1 and  
+      e.salario > 3000.00;
+
+--2. Lista los empleados que tienen 32 años de edad o trabajan en el Departamento 3.
+
+select *
+from empleados e
+where e.edad = 32 or
+    e.departamento_id = 3;
+
+--3. Lista las ventas donde el producto sea el ID 1 y la cantidad sea mayor o igual a 2.
+select *
+from ventas v
+where v.producto_id = 1 and  
+      v.cantidad >= 2;
+
+--4. Muestra las ventas donde el cliente sea el ID 1 o el empleado sea el ID 2.
+
+select *
+from ventas v  
+where v.cliente_id = 1 or 
+    v.empleado_id =2;
+
+--5. Obtén una lista de ventas donde el cliente sea el ID 2 y la cantidad sea mayor que 2.
+
+select *
+from ventas v 
+where v.cliente_id = 2 and 
+    v.cantidad > 2;
+
+--6. Encuentra las ventas realizadas por el empleado con el ID 1 y donde el monto total sea mayor que $2000.00.
+
+select *
+from ventas v 
+where v.empleado_id = 1 and 
+    v.monto_total > 2000.00;
+
+-- Ejercicios: Cláusula BETWEEN
+
+--1. Encuentra a los empleados cuyas edades están entre 29 y 33 años. Muestra el nombre y la edad de los registros que cumplan esa condición. 
+
+select *
+from empleados e 
+where e.edad  BETWEEN 29 and 33;
+
+--2. Encuentra las ventas donde la cantidad de productos vendidos esté entre 2 y 3.
+select * 
+from ventas v 
+where v.cantidad BETWEEN 2 and 3;
+
+--3. Muestra las ventas donde el precio unitario esté entre $300.00 y $500.00.
+
+select *
+from ventas v 
+where v.precio_unitario BETWEEN 300.00 and 500.00;
