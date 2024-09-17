@@ -781,3 +781,50 @@ from productos;
 select avg(edad)
 from empleados;
 
+--Ejercicios GROUP BY()
+
+--1. Agrupa las ventas por empleado y muestra la cantidad total de ventas realizadas por cada empleado.
+select  empleado_id,
+        sum(monto_total)
+from ventas v  
+group by empleado_id;
+
+
+--2. Agrupa los productos por precio y muestra la cantidad de productos con el mismo precio.
+select precio, count(*)
+from productos
+group by precio;
+
+--3. Agrupa los empleados por departamento y muestra la cantidad de empleados en cada departamento.
+
+select departamento_id, count(*)
+from empleados 
+group by departamento_id;
+
+--Ejercicios HAVING 
+--1. Encuentra los departamentos con un salario promedio de sus empleados superior a $3,000.
+
+select departamento_id, 
+       (select d.nombre from departamentos d where d.id = e.departamento_id),
+       avg(salario) promedio
+from empleados e
+group by departamento_id
+having promedio > 3000.00;
+
+--2. Encuentra los productos que se han vendido al menos 5 veces.
+
+select v.producto_id,
+       (select  p.nombre from productos p where p.id = v.producto_id) nombre ,
+        count(*) cantidad
+from ventas v
+group by v.producto_id
+having cantidad>=5;
+
+--3. Selecciona los empleados que tengan una “o” en su nombre o apellido y agrúpalos por departamento y muestra los que tengan el salario máximo.
+
+select departamento_id, 
+       (select nombre from departamentos d where d.id = e.departamento_id) nombre, 
+    max(e.salario) salario_maximo
+from empleados e  
+where e.nombre like '%o%' or e.apellido like '%o%'
+group by e.departamento_id;
