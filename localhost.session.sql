@@ -431,6 +431,7 @@ from empleados e
 where e.edad  BETWEEN 29 and 33;
 
 --2. Encuentra las ventas donde la cantidad de productos vendidos esté entre 2 y 3.
+
 select * 
 from ventas v 
 where v.cantidad BETWEEN 2 and 3;
@@ -440,3 +441,343 @@ where v.cantidad BETWEEN 2 and 3;
 select *
 from ventas v 
 where v.precio_unitario BETWEEN 300.00 and 500.00;
+
+--Carga de datos
+
+show databases;
+use mi_bd;
+
+show tables;
+
+INSERT INTO empleados (nombre, apellido, edad, salario, departamento_id)
+VALUES
+  ('Laura', 'Sánchez', 27, 3300.00, 1),
+  ('Javier', 'Pérez', 29, 3100.00, 1),
+  ('Camila', 'Gómez', 26, 3000.00, 1),
+  ('Lucas', 'Fernández', 28, 3200.00, 1),
+  ('Valentina', 'Rodríguez', 30, 3500.00, 1);
+
+INSERT INTO productos (nombre, precio)
+VALUES
+  ('Cámara Digital', 420.00),
+  ('Smart TV 55 Pulgadas', 1200.00),
+  ('Auriculares Bluetooth', 80.00),
+  ('Reproductor de Blu-ray', 120.00),
+  ('Lavadora de Ropa', 550.00),
+  ('Refrigeradora Doble Puerta', 800.00),
+  ('Horno de Microondas', 120.00),
+  ('Licuadora de Alta Potencia', 70.00),
+  ('Silla de Oficina Ergonómica', 150.00),
+  ('Escritorio de Madera', 200.00),
+  ('Mesa de Comedor', 250.00),
+  ('Sofá de Tres Plazas', 350.00),
+  ('Mochila para Portátil', 30.00),
+  ('Reloj de Pulsera Inteligente', 100.00),
+  ('Juego de Utensilios de Cocina', 40.00),
+  ('Set de Toallas de Baño', 20.00),
+  ('Cama King Size', 500.00),
+  ('Lámpara de Pie Moderna', 70.00),
+  ('Cafetera de Goteo', 40.00),
+  ('Robot Aspirador', 180.00);
+INSERT INTO clientes (nombre, direccion)
+VALUES
+  ('Alejandro López', 'Calle Rivadavia 123, Buenos Aires'),
+  ('Sofía Rodríguez', 'Avenida San Martín 456, Rosario'),
+  ('Joaquín Pérez', 'Calle Belgrano 789, Córdoba'),
+  ('Valeria Gómez', 'Calle Mitre 101, Mendoza'),
+  ('Diego Martínez', 'Avenida 9 de Julio 654, Buenos Aires');
+INSERT INTO ventas (producto_id, cliente_id, cantidad, precio_unitario, empleado_id)
+VALUES
+  (1, 6, 3, 1350.00, 1),
+  (5, 8, 5, 420.00, 9),
+  (10, 2, 2, 800.00, 6),
+  (14, 7, 1, 200.00, 5),
+  (20, 4, 4, 20.00, 6),
+  (4, 5, 5, 280.00, 1),
+  (9, 5, 3, 550.00, 1),
+  (13, 3, 4, 150.00, 5),
+  (19, 6, 2, 40.00, 1),
+  (2, 9, 5, 480.00, 1);
+INSERT INTO ventas (producto_id, cliente_id, cantidad, precio_unitario, empleado_id)
+VALUES
+  (3, 9, 1, 350.00, 1),
+  (6, 7, 4, 1200.00, 1),
+  (7, 6, 3, 80.00, 1),
+  (12, 9, 5, 70.00, 1),
+  (16, 8, 2, 350.00, 6),
+  (23, 9, 4, 180.00, 1),
+  (18, 4, 3, 100.00, 7),
+  (11, 3, 2, 120.00, 5),
+  (15, 5, 4, 250.00, 6),
+  (8, 8, 1, 120.00, 7);
+INSERT INTO ventas (producto_id, cliente_id, cantidad, precio_unitario, empleado_id)
+VALUES
+  (17, 3, 2, 30.00, 5),
+  (21, 9, 5, 500.00, 6),
+  (22, 2, 3, 70.00, 6),
+  (24, 9, 2, 180.00, 1),
+  (5, 1, 2, 1350.00, 1),
+  (9, 6, 4, 550.00, 9),
+  (13, 8, 3, 150.00, 7),
+  (3, 1, 5, 350.00, 1),
+  (18, 9, 1, 100.00, 6),
+  (10, 5, 2, 800.00, 1);
+INSERT INTO ventas (producto_id, cliente_id, cantidad, precio_unitario, empleado_id)
+VALUES
+  (7, 4, 3, 80.00, 6),
+  (2, 5, 1, 480.00, 6),
+  (8, 7, 4, 120.00, 7),
+  (1, 3, 5, 1350.00, 5),
+  (4, 6, 2, 280.00, 5),
+  (12, 1, 1, 70.00, 1),
+  (19, 4, 3, 40.00, 6),
+  (15, 3, 4, 250.00, 5),
+  (6, 8, 2, 1200.00, 7),
+  (11, 2, 3, 120.00, 5);
+
+-- 
+-- Ejercicios cláusula IN
+
+--1.  Encuentra los empleados cuyos IDs son 1, 3 o 5.
+
+select *
+from empleados
+where id in (1, 2, 5);
+
+select id, nombre Nombre, apellido Apellido
+from empleados
+where id  in (1,2,5);
+
+select e.id, e.nombre, e.apellido
+from empleados e
+where e.id in (1,2,5);
+
+--2. Busca los productos con IDs 2, 4 o 6 en la tabla de productos.
+
+select *
+from productos p 
+where p.id in (2,4,6);
+
+--3.  Encuentra las ventas que tienen los clientes con IDs 1, 3 o 5.
+
+select *
+from ventas v  
+where v.cliente_id in (1,3,5);
+
+-- Ejercicios cláusula LIKE
+
+-- 1. Encuentra los empleados cuyos nombres comienzan con "L".
+
+select *
+from empleados e
+where e.nombre like 'L%';
+
+--2. Busca los productos cuyos nombres contengan la palabra "Teléfono".
+
+select *
+from productos p
+where p.nombre like '%Teléfono%';
+
+--3. Encuentra los clientes cuyas direcciones contienen la palabra "Calle".
+
+select *
+from clientes c  
+where c.direccion like '%Calle%';
+
+--Extra: uso de '_'
+select *
+from empleados 
+where nombre like '_a%';
+
+--Ejercicios cláusula ORDER BY:
+
+--1. Ordena los empleados por salario de manera ascendente.
+
+select *
+from empleados 
+order by salario ;
+
+--2. Ordena los productos por nombre de manera descendente.
+
+select * 
+from productos
+order by nombre desc; 
+
+--3. Ordena las ventas por cantidad de manera ascendente y luego por precio_unitario de manera descendente.
+
+select *
+from ventas
+order by cantidad asc, precio_unitario desc;
+
+--Ejercicios LIMIT
+
+--1. Muestra los 5 productos más caros de la tabla "productos".
+
+select *
+from productos
+order by precio desc
+limit 5;
+
+--2. Muestra los 10 primeros empleados en orden alfabético por apellido.
+
+select *
+from empleados
+order by apellido asc
+limit 10;
+
+--3. Muestra las 3 ventas con el monto total más alto.
+
+select *
+from ventas 
+order by monto_total desc
+limit 3; 
+
+--Ejercicios AS
+
+--1. Crea una consulta que muestre el salario de los empleados junto con el salario aumentado en un 10% nombrando a la columna como “Aumento del 10%”.
+
+select nombre, apellido, salario, (salario*1.1) as "Aumento del 10%" 
+from empleados; 
+
+--2. Crea una consulta que calcule el monto total de las compras realizadas por cliente y que la columna se llame “Monto total gastado”.
+
+select cliente_id, sum(monto_total) as "Monto total gastado"
+from ventas
+group by cliente_id;
+
+--3. Muestra los nombres completos de los empleados concatenando los campos "nombre" y "apellido" y que la columna se llame “Nombre y apellido”.
+
+select e.nombre, e.apellido, concat(e.nombre, ' ' ,e.apellido) as "Nombre y Apellido"
+from empleados e;
+
+-- Ejercicios CASE
+
+
+--1. Crea una consulta que muestre el nombre de los productos y los categorice como "Caro" si el precio es mayor o igual a $500, "Medio" si es mayor o igual a $200 y menor que $500, y "Barato" en otros casos.
+
+select p.nombre,
+    CASE
+        when p.precio >= 500.00 then 'Caro'
+        when p.precio >= 200.00 then 'Medio'
+        else 'Barato'
+    end as "Categoría",
+    p.precio
+from productos p;
+
+--2. Crea una consulta que muestre el nombre de los empleados y los categorice como "Joven" si tienen menos de 30 años, "Adulto" si tienen entre 30 y 40 años, y "Mayor" si tienen más de 40 años.
+
+select e.nombre,
+    CASE
+        when e.edad < 30 then 'Joven'
+        when e.edad >=30 and edad <= 40 then 'Adulto'
+        else 'Mayor'
+    end as "Categoría",
+    e.edad
+from empleados e;
+
+--3. Crea una consulta que muestre el ID de la venta y los categorice como "Poca cantidad" si la cantidad es menor que 3, "Cantidad moderada" si es igual o mayor que 3 y menor que 6, y "Mucha cantidad" en otros casos.
+
+select  v.id, 
+        v.cantidad,
+        CASE
+            when v.cantidad < 3 then 'Poca cantidad'
+            when v.cantidad >= 3 and v.cantidad < 6 then 'Cantidad Moderada'
+            else 'Mucha cantidad'
+        end as "Categoría"
+from ventas v
+order by v.cantidad;
+
+--4. Crea una consulta que muestre el nombre de los clientes y los categorice como "Comienza con A" si su nombre comienza con la letra 'A', "Comienza con M" si comienza con 'M' y "Otros" en otros casos.
+
+select c.nombre,
+        CASE
+            when c.nombre like 'A%' then "Comienza con A"
+            when c.nombre like 'M%' then "Comienza con M"
+            else 'Otros'
+        end as "Categoría"
+from clientes c;
+
+--5. Crea una consulta que muestre el nombre de los empleados y los categorice como "Salario alto" si el salario es mayor o igual a $3500, "Salario medio" si es mayor o igual a $3000 y menor que $3500, y "Salario bajo" en otros casos.
+
+select e.nombre,
+        CASE
+            when e.salario >= 3500.00 then 'Salario alto'
+            when e.salario >= 3000.00 then 'Salario medio'
+            else 'Salario bajo'
+        end as "Cateroría", 
+        e.salario
+from empleados e
+order by e.salario;
+
+--Practicando con funciones avanzadas
+
+--Ejercicios Función MAX() 
+
+--1. Encuentra el salario máximo de todos los empleados.
+select max(salario)
+from empleados;
+
+--2. Encuentra la cantidad máxima de productos vendidos en una sola venta.
+select max(v.cantidad)
+from ventas v;
+
+--3. Encuentra la edad máxima de los empleados.
+select max(e.edad)
+from empleados e;
+
+--Ejercicios Función MIN()
+
+--1. Encuentra el salario mínimo de todos los empleados.
+select min(salario)
+from empleados;
+--2. Encuentra la cantidad mínima de productos vendidos en una sola venta.
+select min(v.cantidad)
+from ventas v;
+--3. Encuentra la edad mínima de los empleados.
+select min(e.edad)
+from empleados e;
+
+
+-- Ejercicios de la Función COUNT()
+--1.Cuenta cuántos empleados hay en total.
+
+select count(*)
+from empleados;
+
+--2. Cuenta cuántas ventas se han realizado.
+select count(*)
+from ventas;
+
+--3. Cuenta cuántos productos tienen un precio superior a $500.
+
+select count(*)
+from productos
+where precio >500;
+
+
+--Ejercicios de la Función SUM()
+
+--1. Calcula la suma total de salarios de todos los empleados.
+select sum(salario)
+from empleados;
+
+--2. Calcula la suma total de montos vendidos en todas las ventas.
+select sum(monto_total)
+from ventas;
+
+--3. Calcula la suma de precios de productos con ID par.
+select sum(precio)
+from productos
+where mod(id, 2) = 0 ;
+
+--Ejercicios Función AVG()
+--1. Calcula el salario promedio de todos los empleados.
+select avg(salario)
+from empleados;
+--2. Calcula el precio unitario promedio de todos los productos.
+select avg(precio)
+from productos;
+--3. Calcula la edad promedio de los empleados.
+select avg(edad)
+from empleados;
+
