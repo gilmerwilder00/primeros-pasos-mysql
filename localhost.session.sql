@@ -828,3 +828,96 @@ select departamento_id,
 from empleados e  
 where e.nombre like '%o%' or e.apellido like '%o%'
 group by e.departamento_id;
+
+-- Ejercicios consultas multitabla  - Parte 1
+
+--1. Une las tablas de empleados con departamentos y solo muestra las columnas nombre, apellido, edad, salario de empleados y la columna nombre de departamentos.
+
+select e.nombre, e.apellido, e.edad , e.salario, d.nombre departamento
+from empleados e, departamentos d
+where  e.departamento_id = d.id
+
+--2. Une las tablas ventas con la tabla empleados donde se muestren todas las columnas de ventas exceptuando la columna empleado_id y en su lugar muestres el nombre y apellido de la tabla empleados.
+
+select v.id, v.producto_id, v.cliente_id, v.cantidad, v.precio_unitario, v.monto_total, e.nombre nombre_empleado , e.apellido apellido_empleado
+from ventas v, empleados e
+where v.empleado_id = e.id;
+
+--3. Une las tablas ventas con la tabla productos donde se muestren todas las columnas de ventas exceptuando la columna producto_id y en su lugar muestres la columna nombre de la tabla productos.
+
+select  v.id, p.nombre producto , v.cliente_id, v.cantidad, v.precio_unitario, v.monto_total
+from ventas v, productos p
+where v.producto_id = p.id;
+
+--4. Une las tablas ventas con la tabla clientes donde se muestren todas las columnas de ventas exceptuando la columna cliente_id y en su lugar muestres la columna nombre de la tabla clientes.
+
+select  v.id, v.producto_id , c.nombre cliente, v.cantidad, v.precio_unitario, v.monto_total
+from ventas v, clientes c
+where v.cliente_id = c.id;
+
+--5. Une las tablas ventas con la tablas empleados y departamentos donde se muestren todas las columnas de ventas exceptuando la columna empleado_id y en su lugar muestres el nombre y apellido de la tabla empleados y además muestres la columna nombre de la tabla departamentos.
+
+select v.id, v.producto_id, v.cliente_id, v.cantidad, v.precio_unitario, v.monto_total, concat(e.nombre,' ' ,e.apellido) empleado, d.nombre departamento
+from ventas v, empleados e, departamentos d
+where v.empleado_id = e.id and
+    e.departamento_id = d.id; 
+
+--6. Une las tablas ventas, empleados, productos y clientes donde se muestren las columnas de la tabla ventas reemplazando sus columnas de FOREIGN KEYs con las respectivas columnas de “nombre” de las otras tablas.
+
+select v.id, p.nombre producto, c.nombre cliente, v.cantidad, v.precio_unitario, v.monto_total,e.nombre empleado
+from ventas v, empleados e, productos p, clientes c
+where v.empleado_id = e.id and
+    v.producto_id = p.id and  
+    v.cliente_id = c.id;
+
+--7. Calcular el salario máximo de los empleados en cada departamento y mostrar el nombre del departamento junto con el salario máximo.
+
+select d.nombre departamento, max(salario) salario_maximo
+from departamentos d, empleados e
+where d.id = e.departamento_id 
+group by departamento;
+
+--Ejercicios consultas multitabla - Parte 2 
+
+--1. Calcular el monto total de ventas por departamento y mostrar el nombre del departamento junto con el monto total de ventas.
+
+select d.nombre departamento, sum(monto_total)
+from ventas v , empleados e , departamentos d 
+where v.empleado_id = e.id and
+    e.departamento_id = d.id
+group by departamento;
+
+--select DISTINCT empleado_id
+--from ventas v; (1,2,5,6,7,9)
+
+--select nombre,
+--    (select nombre from departamentos d where d.id = e.departamento_id)
+--from empleados e
+--where e.id in (1,2,5,6,7,9);
+
+--2. Encontrar el empleado más joven de cada departamento y mostrar el nombre del departamento junto con la edad del empleado más joven.
+
+select d.nombre departamento, min(e.edad) edad
+from empleados e, departamentos d
+where e.departamento_id = d.id
+group by departamento
+order by edad desc;
+
+--3. Calcular el volumen de productos vendidos por cada producto (por ejemplo, menos de 5 “bajo”, menos 8 “medio” y mayor o igual a 8 “alto”) y mostrar la categoría de volumen junto con la cantidad y el nombre del producto.
+
+SELECT 
+    CASE 
+        when sum(cantidad) <  5 then 'Bajo'
+        when sum(cantidad) <  8 then 'Medio'
+        else 'Alto'
+    end as categoria_volumen,
+    sum(cantidad) cantidad_total,
+    p.nombre producto 
+from ventas v, productos p
+where v.producto_id = p.id
+group by producto
+order by cantidad_total desc;
+
+
+
+
