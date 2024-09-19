@@ -919,5 +919,40 @@ group by producto
 order by cantidad_total desc;
 
 
+--4. Encontrar el cliente que ha realizado el mayor monto total de compras y mostrar su nombre y el monto total.
+
+select c.nombre cliente, max(v.monto_total) monto_total
+from ventas v, clientes c 
+where v.cliente_id = c.id
+group by cliente
+order by monto_total desc
+limit 1;
+
+--5. Calcular el precio promedio de los productos vendidos por cada empleado y mostrar el nombre del empleado junto con el precio promedio de los productos que ha vendido.
+
+select e.nombre 'Nombre empleado', avg(p.precio) 'Monto promedio ventas'
+from ventas v , empleados e, productos p
+where v.empleado_id = e.id and
+    v.producto_id =  p.id
+group by e.nombre
+order by 2 desc;
+
+--6. Encontrar el departamento con el salario mínimo más bajo entre los empleados y mostrar el nombre del departamento junto con el salario mínimo más bajo.
+
+select  d.nombre Departamento, min(e.salario) 'Salario más bajo'
+from departamentos d, empleados e
+where d.id = e.departamento_id
+group by d.nombre;
+
+--7. Encuentra el departamento con el salario promedio más alto entre los empleados mayores de 30 años y muestra el nombre del departamento junto con el salario promedio. Limita los resultados a mostrar solo los departamentos con el salario promedio mayor a 3320.
+
+select d.nombre 'Nombre departamento', avg(e.salario)
+from departamentos d, empleados e
+where d.id = e.departamento_id and 
+    e.edad >30
+group by d.nombre
+having avg(e.salario) > 3320.00;
+
+
 
 
