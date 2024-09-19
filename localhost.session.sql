@@ -954,5 +954,145 @@ group by d.nombre
 having avg(e.salario) > 3320.00;
 
 
+-- Ejercicios JOIN Parte 1
+
+--1. Encuentra el nombre y apellido de los empleados junto con la cantidad total de ventas que han realizado.
+
+use mi_bd;
+
+select e.nombre nombre_empleado , e.apellido apellido_empleado, sum(v.cantidad) cantidad
+from empleados e
+inner join ventas v
+on e.id = v.empleado_id
+group by nombre_empleado, apellido_empleado
+order by cantidad desc;
+
+--2. Calcula el monto total vendido a cada cliente y muestra el nombre del cliente, su dirección y el monto total.
+
+select c.nombre 'Nombre cliente', c.direccion 'Dirección cliente', sum(monto_total) 'Monto total'
+from clientes c
+join ventas v
+on c.id = v.cliente_id
+group by c.nombre, c.direccion
+order by 3 desc;
+
+--3. Encuentra los productos vendidos por cada empleado en el departamento de "Ventas" y muestra el nombre del empleado junto con el nombre de los productos que han vendido.
 
 
+select DISTINCT e.nombre 'Nombre empleado', p.nombre 'Nombre producto' 
+from ventas v 
+inner join empleados e
+    on v.empleado_id = e.id
+inner join productos p
+    on v.producto_id = p.id
+where e.departamento_id = (select id from departamentos d where d.nombre = 'Ventas')
+order by 1;
+
+--4. Encuentra el nombre del cliente, el nombre del producto y la cantidad comprada de productos con un precio superior a $500.
+
+select  c.nombre 'Nombre de cliente', p.nombre 'Producto', sum(v.cantidad) Cantidad, p.precio
+from clientes c
+inner join ventas v 
+    on c.id = v.cliente_id
+inner join productos p
+    on v.producto_id  =  p.id
+where p.precio > 500.00
+GROUP BY c.nombre, p.nombre, p.precio
+order by p.precio desc
+;
+
+select * from ventas order by producto_id;
+
+--Ejercicios JOIN Parte 2
+
+--1. Calcula la cantidad de ventas por departamento, incluso si el departamento no tiene ventas.
+
+use mi_bd;
+
+select d.id, d.nombre Departamento, count(v.id) 'Cantidad de ventas'
+from departamentos d
+left join empleados e
+on d.id = e.departamento_id
+left join ventas v  
+on v.empleado_id = e.id
+group by d.id;
+
+
+--2. Encuentra el nombre y la dirección de los clientes que han comprado más de 3 productos y muestra la cantidad de productos comprados.
+
+select c.nombre Cliente, c.direccion Direción,  count( DISTINCT v.producto_id) 'Cantidad de productos'
+from clientes c
+left join ventas v
+on c.id = v.cliente_id
+group by c.nombre, c.direccion
+having count(DISTINCT v.producto_id) > 3
+order by 3 desc;
+
+--3. Calcula el monto total de ventas realizadas por cada departamento y muestra el nombre del departamento junto con el monto total de ventas.
+
+select d.nombre Departamento, sum(v.monto_total) 'Monto total ventas'
+from departamentos d
+left join empleados e
+on d.id = e.departamento_id
+left join ventas v
+on v.empleado_id = e.id
+group by d.nombre;
+
+--Actividad: Ejercicios Complementarios
+-- Estos ejercicios son de tipo complementario. Esto quiere decir que te ayudará a avanzar en profundidad en el tema visto, pero no son obligatorios. Te recomendamos intentar con tu equipo trabajar algunos de ellos. 
+
+--1. Muestra el nombre y apellido de los empleados que pertenecen al departamento de "Recursos Humanos" y han realizado más de 5 ventas.
+
+select e.nombre, e.apellido, count(v.id) 'Cantidad ventas'
+from empleados e
+inner join departamentos d
+    on e.departamento_id = d.id
+inner join ventas v    
+    on e.id = v.empleado_id 
+where d.nombre = "Recursos Humanos"
+group by e.nombre, e.apellido
+having count(v.id) > 5
+order by 3 desc;
+
+
+--2. Muestra el nombre y apellido de todos los empleados junto con la cantidad total de ventas que han realizado, incluso si no han realizado ventas.
+
+
+select e.nombre, e.apellido, sum(v.cantidad) 'Cantidad total'
+from empleados e
+left join ventas v 
+    on e.id = v.empleado_id
+group by e.nombre, e.apellido;
+
+
+--3. Encuentra el empleado más joven de cada departamento y muestra el nombre del departamento junto con el nombre y la edad del empleado más joven.
+
+
+select d.nombre, e.nombre, e.apellido, e.edad
+from departamentos d
+inner join empleados e
+    on e.departamento_id = d.id
+inner join(
+    select departamento_id, MIN(edad) edad_minima
+    from empleados e
+    group by departamento_id ) e_min
+    on  e.departamento_id =  e_min.departamento_id and
+    e.edad  = e_min.edad_minima ;
+
+
+--4. Calcula el volumen de productos vendidos por cada producto (por ejemplo, menos de 5 como "bajo", entre 5 y 10 como "medio", y más de 10 como "alto") y muestra la categoría de volumen junto con la cantidad y el nombre del producto.
+
+
+select 
+    case   
+        when  sum(v.cantidad) >10 then  'Alto'
+        when  sum(v.cantidad) >5 then 'Medio'
+        else 'Bajo'
+    end as Volumen,
+    sum(v.cantidad) 'Cantidad Total',
+    p.nombre 'Nombre Producto'
+from productos p
+inner join ventas v
+    on p.id = v.producto_id
+group by p.nombre
+order by  2 desc;
