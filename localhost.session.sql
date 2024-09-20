@@ -1096,3 +1096,111 @@ inner join ventas v
     on p.id = v.producto_id
 group by p.nombre
 order by  2 desc;
+
+-- Ejercicios Prácticos con Tablas Temporales 
+
+--EJERCICIOS TEÓRICOS
+
+DROP TEMPORARY TABLE IF EXISTS tabla_temporal1;
+CREATE TEMPORARY TABLE tabla_temporal1 AS
+VALUES ROW(10, 'Alice'), ROW(20, 'Bob'), ROW(30, 'Charlie');
+
+table tabla_temporal1;
+
+DROP TEMPORARY TABLE IF EXISTS tabla_temporal2;
+CREATE TEMPORARY TABLE tabla_temporal2 AS
+VALUES ROW(20, 'bob'), ROW(15, 'David'), ROW(25, 'Eve');
+
+table tabla_temporal2;
+
+-- alt + shift + flecha abajo
+
+--UNION
+table tabla_temporal1 union table tabla_temporal2; 
+table tabla_temporal2 union table tabla_temporal1; 
+
+--INTERSECT
+table tabla_temporal1 intersect table tabla_temporal2; 
+table tabla_temporal2 intersect table tabla_temporal1; 
+
+--EXCEPT
+table tabla_temporal1 except table tabla_temporal2; 
+table tabla_temporal2 except table tabla_temporal1; 
+
+
+use mi_bd;
+
+--1. Utiliza TABLE para consultar la tabla productos de manera simple, ordenando los productos de forma descendente por precio y solo 10 filas.
+
+table productos
+order by precio asc
+limit 10;
+--2. Crea una tabla temporal de los empleados donde unifiques su nombre y apellido en una sola columna.
+
+drop temporary table if exists tabla_temporal_empleados;
+create temporary table tabla_temporal_empleados AS
+select concat(e.nombre, ' ', e.apellido) 'Nombre empleado' from empleados e;
+
+select * from tabla_temporal_empleados;
+table tabla_temporal_empleados;
+
+--3. Crea una tabla temporal de la tabla clientes donde solo tengas la columna nombre.
+
+select * from clientes;
+
+drop temporary table if exists tabla_temporal_clientes;
+create temporary table tabla_temporal_clientes as
+select c.nombre 'Nombre cliente' from clientes c; 
+
+select * from tabla_temporal_clientes;
+table tabla_temporal_clientes;
+
+--4. Realiza la unión entre las tablas temporales de empleados y clientes usando TABLE.
+
+table tabla_temporal_empleados 
+UNION
+table tabla_temporal_clientes;
+
+--5. Crea una tabla temporal escuela primaria que tenga las siguientes columnas: id(int), nombre(varchar), apellido(varchar), edad(int) y grado(int). Y que tenga los siguientes valores:
+
+--ID: 1, Nombre: Alejandro, Apellido: González, Edad: 11, Grado: 5
+--ID: 2, Nombre: Isabella, Apellido: López, Edad: 10, Grado: 4
+--ID: 3, Nombre: Lucas, Apellido: Martínez, Edad: 11, Grado: 5 
+--ID: 4, Nombre: Sofía, Apellido: Rodríguez, Edad: 10, Grado: 4 
+--ID: 5, Nombre: Mateo, Apellido: Pérez, Edad: 12, Grado: 6 
+--ID: 6, Nombre: Valentina, Apellido: Fernández, Edad: 12, Grado: 6
+--ID: 7, Nombre: Diego, Apellido: Torres, Edad: 10, Grado: 4
+--ID: 8, Nombre: Martina, Apellido: Gómez, Edad: 11, Grado: 5
+--ID: 9, Nombre: Joaquín, Apellido: Hernández, Edad: 10, Grado: 4
+--ID: 10, Nombre: Valeria, Apellido: Díaz, Edad: 11, Grado: 5
+
+drop temporary table if exists escuela_primaria;
+create temporary table escuela_primaria(
+    id int auto_increment primary key,
+    nombre varchar(45),
+    apellido varchar(45),
+    edad int,
+    grado int
+);
+
+table escuela_primaria;
+
+describe escuela_primaria;
+show columns from escuela_primaria;
+
+insert into escuela_primaria(nombre, apellido, edad, grado) values ('Alejandro', 'González', 11, 5);
+insert into escuela_primaria(nombre, apellido, edad, grado) values ('Isabella', 'López', 10, 4);
+insert into escuela_primaria(nombre, apellido, edad, grado) values ('Lucas', 'Martínez', 11, 5);
+insert into escuela_primaria(nombre, apellido, edad, grado) values ('Sofía', 'Rodríguez', 10, 4);
+insert into escuela_primaria(nombre, apellido, edad, grado) values ('Mateo', 'Pérez', 12, 6);
+insert into escuela_primaria(nombre, apellido, edad, grado) values ('Valentina', 'Fernández', 12, 6);
+insert into escuela_primaria(nombre, apellido, edad, grado) values ('Diego', 'Torres', 10, 4);
+insert into escuela_primaria(nombre, apellido, edad, grado) values ('Martina', 'Gómez', 11, 5);
+insert into escuela_primaria(nombre, apellido, edad, grado) values ('Joaquín', 'Hernández', 10, 4);
+insert into escuela_primaria(nombre, apellido, edad, grado) values ('Valeria', 'Díaz', 11, 5);
+insert into escuela_primaria(nombre, apellido, edad, grado) values ('valeria', 'Díaz', 11, 5);
+
+select * from escuela_primaria;
+table escuela_primaria;
+
+--------
