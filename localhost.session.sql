@@ -1297,3 +1297,139 @@ select e.fecha_envio,
     DATE_FORMAT(e.fecha_envio, '%d-%m-%Y')
 from envios e   
 where e.id = 6;
+
+--11. Utiliza la función DATE_SUB para calcular la fecha de envío del envío con ID 4 si se le restan 2 días.
+
+select e.fecha_envio, DATE_SUB(e.fecha_envio, INTERVAL 2 DAY) as 'Fecha envio 2 dias antes'
+from envios e
+where e.id = 4;
+
+--12. Utiliza la función DATEDIFF para calcular la diferencia en días entre la fecha de envío y la fecha de entrega programada para el envío con código de producto 'PQR456'.
+
+select e.fecha_envio, e.fecha_entrega, DATEDIFF(e.fecha_envio, e.fecha_entrega) 'Diferencia'
+from envios e
+where e.codigo_producto = 'PQR456'
+
+--13. Utiliza la función DAY para obtener el día del mes en que se realizó el envío con ID 2.
+
+select  e.fecha_envio, 
+        day(e.fecha_envio) 'Dia mes envío'
+from envios e
+where e.id = 2;
+
+--14. Utiliza la función DAYNAME para obtener el nombre del día de la semana en que se entregará el envío con código de producto 'DEF777'.
+
+SET lc_time_names = 'es_PE';
+
+select  e.fecha_entrega,
+        dayname(e.fecha_entrega) as 'Dia de la semana de entrega'
+from envios e
+where e.codigo_producto = 'DEF777';
+
+--15. Utiliza la función DAYOFMONTH para obtener el día del mes en que se entregará el envío con código de producto 'GHI888'.
+
+select  e.fecha_entrega,
+        DAYOFMONTH(e.fecha_entrega) as 'Día del mes de entrega'
+from envios e
+where e.codigo_producto = 'GHI888'
+
+
+--Funciones de fecha y hora avanzadas
+
+
+-- 16. Utiliza la función PERIOD_ADD para agregar un período de 3 meses al año-mes '2022-07'.
+
+select period_add('202207', 3);
+
+-- 17. Utiliza la función PERIOD_DIFF para calcular el número de meses entre los períodos '2022-03' y '2022-12'.
+
+select period_diff('202203', '202212') as 'Diferencia meses';
+
+-- 18. Utiliza la función QUARTER para obtener el trimestre de la fecha de entrega del envío con código de producto 'PQR456'.
+
+select e.fecha_entrega,
+       quarter(e.fecha_entrega) as 'Trimestre de entrega'
+from envios e
+where e.codigo_producto = 'PQR456';
+
+-- 19. Utiliza la función SEC_TO_TIME para convertir 3665 segundos en formato 'hh:mm:ss'.
+
+select sec_to_time(3365) 'HH:MM:SS';
+
+-- 20. Utiliza la función SECOND para obtener los segundos de la hora de envío del envío con ID 2.
+
+select  e.fecha_envio,
+        SECOND(e.fecha_envio) as 'Segundos hora envio'
+from envios e
+where e.id = 2;
+
+-- 21. Utiliza la función STR_TO_DATE para convertir la cadena '2022()08()15' en una fecha.
+
+select str_to_date('2022()08()15', '%Y()%m()%d') as 'Fecha';
+
+-- 22. Utiliza la función SUBDATE (o DATE_SUB) para restar 5 días a la fecha de entrega del envío con código de producto 'GHI888'.
+
+select  e.fecha_entrega,
+        date_sub(e.fecha_entrega, interval 5 day) 'Fecha entrega nueva'
+from envios e
+where e.codigo_producto = 'GHI888';
+
+-- 23. Utiliza la función SUBTIME para restar 2 horas y 15 minutos a la hora de envío del envío con ID 7.
+
+select  e.fecha_envio,
+        SUBTIME(e.fecha_envio, '02:15:00') as 'Hora envio nueva'
+from envios e
+where e.id = 7;
+
+-- 24. Utiliza la función TIME para extraer la porción de tiempo de la fecha de envío del envío con ID 1.
+
+select  e.fecha_envio,
+        TIME(e.fecha_envio) as 'Time'
+from envios e
+where e.id = 1;
+
+-- 25. Utiliza la función TIME_FORMAT para formatear la hora de envío del envío con ID 2 en 'hh:mm:ss'.
+
+select  e.fecha_envio,
+        TIME_FORMAT(e.fecha_envio, '%T') 'Nuevo formato'
+from envios e
+where e.id =2;
+
+-- 26. Utiliza la función TIME_TO_SEC para convertir la hora de envío del envío con ID 3 en segundos.
+
+select  e.fecha_envio,
+        TIME_TO_SEC(TIME(e.fecha_envio)) 'Tiempo en segundos'
+from envios e
+where e.id =3;
+
+-- 27. Utiliza la función TIMEDIFF para calcular la diferencia de horas entre las fechas de envío y entrega del envío con ID 4.
+
+select  e.fecha_envio,
+        e.fecha_entrega,
+        TIMEDIFF(e.fecha_envio, e.fecha_entrega) 'Diferencia'
+from envios e
+where e.id =4;
+
+-- 28. Utiliza la función SYSDATE para obtener la hora exacta en la que se ejecuta la función en la consulta. Para comprobar esto invoca SYSDATE, luego la función SLEEP durante 5 segundos y luego vuelve a invocar la función SYSDATE, y verifica la diferencia entre ambas invocaciones con TIMEDIFF.
+
+SELECT TIMEDIFF(hora_final, hora_inicial) AS diferencia_de_hora FROM
+( SELECT
+SYSDATE() AS hora_inicial,
+SLEEP(5),
+SYSDATE() AS hora_final) t;
+
+-- 29. Crea una consulta que utilice la función TIMESTAMP para obtener todos los valores de fecha_envio sumandole 12 horas.
+
+select  e.id,
+        e.fecha_entrega,
+        e.fecha_envio,
+        timestamp(e.fecha_envio, '12:00:00') as 'Fecha envio nueva'
+from envios e;
+
+-- 30. Utiliza la función TIMESTAMPADD para agregar 3 horas a la fecha de entrega del envío con código de producto 'XYZ789'.
+
+select  e.fecha_envio,
+        timestampadd(HOUR, 3 , e.fecha_envio) as 'Fecha envio nueva'
+from envios e
+where e.codigo_producto = 'XYZ789';
+
