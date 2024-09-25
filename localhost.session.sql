@@ -1203,4 +1203,97 @@ insert into escuela_primaria(nombre, apellido, edad, grado) values ('valeria', '
 select * from escuela_primaria;
 table escuela_primaria;
 
---------
+
+
+--MySQL: Funciones de Texto
+
+
+
+--MySQL: Funciones de Fecha y Hora
+
+-- Ejercicios funciones de  fecha y hora
+
+--1. Crea una tabla llamada "envios" con cuatro columnas: "id" de tipo INT como clave primaria y autoincremental, "fecha_envio" de tipo DATETIME,  "fecha_entrega" de tipo DATETIME y "codigo_producto" de tipo VARCHAR(10). Luego, inserta siete filas en la tabla "envios" con los siguientes datos:
+
+create table envios(
+    id int auto_increment primary key,
+    fecha_envio datetime,
+    fecha_entrega datetime,
+    codigo_producto varchar(10)
+);
+
+insert into envios (fecha_envio, fecha_entrega, codigo_producto) values ('2022-01-15 08:00:00', '2022-01-20 12:30:00', 'ABC123');
+insert into envios (fecha_envio, fecha_entrega, codigo_producto) values ('2022-02-10 10:15:00', '2022-02-15 14:45:00', 'XYZ789');
+insert into envios (fecha_envio, fecha_entrega, codigo_producto) values ('2022-03-05 09:30:00', '2022-03-10 13:20:00', 'PQR456');
+insert into envios (fecha_envio, fecha_entrega, codigo_producto) values ('2022-04-20 11:45:00', '2022-04-25 15:10:00', 'LMN001');
+insert into envios (fecha_envio, fecha_entrega, codigo_producto) values ('2022-05-12 07:55:00', '2022-05-17 10:25:00', 'DEF777');
+insert into envios (fecha_envio, fecha_entrega, codigo_producto) values ('2022-06-08 08:20:00', '2022-06-13 12:40:00', 'GHI888');
+insert into envios (fecha_envio, fecha_entrega, codigo_producto) values ('2022-07-03 10:05:00', '2022-07-08 14:15:00', 'JKL999');
+
+--2. Utilizando la función DATE_ADD, calcula la fecha de entrega programada para un envío con código de producto 'ABC123' cuando se le añaden 5 días a la fecha de envío.
+
+select e.fecha_entrega , 
+    DATE_ADD(e.fecha_entrega, INTERVAL 5 DAY) as "Fecha entrega programada",
+    ADDDATE(e.fecha_entrega, 5) as "Fecha entrega programada 2"
+from envios e
+where e.codigo_producto ='ABC123';
+
+--3. Utilizando la función ADDTIME, encuentra la hora estimada de entrega para un envío con código de producto 'XYZ789' si se suma 4 horas y 30 minutos a la hora de entrega. 
+
+select  e.codigo_producto , e.fecha_entrega , 
+ADDTIME(e.fecha_entrega, '04:30:00') as "Fecha de entrega sumada",
+TIME(ADDTIME(e.fecha_entrega, '04:30:00')) as "Hora de entrega sumada"
+from envios e
+where e.codigo_producto ='XYZ789';
+
+--4. Utilizando la función CONVERT_TZ, convierte la fecha de envío de un envío con código de producto 'PQR456' de la zona horaria 'UTC' (+00:00) a la zona horaria de Argentina GMT-3 (-03:00).
+
+select e.codigo_producto,
+       e.fecha_envio,
+       CONVERT_TZ(e.fecha_envio, '+00:00' , '-03:00' ) as 'Fecha envio Argentina'
+from envios e   
+where e.codigo_producto = 'PQR456';
+
+--5. Calcula la diferencia en días entre la fecha de entrega y la fecha de envío para el envío con código de producto 'LMN001' utilizando la función DATEDIFF.
+
+select e.codigo_producto,
+       e.fecha_entrega,
+       e.fecha_envio,
+       DATEDIFF(e.fecha_entrega, e.fecha_envio) 'Diferencia'
+from envios e   
+where e.codigo_producto = 'LMN001';
+
+--6. Utiliza la función CURDATE para obtener la fecha actual y, a continuación, obtener la diferencia en días entre la fecha de entrega con código de producto 'DEF777' y la fecha actual.
+
+select e.codigo_producto,
+       e.fecha_entrega,
+       CURDATE() as 'Fecha actual',
+       DATEDIFF(e.fecha_entrega, CURDATE()) 'Diferencia'
+from envios e   
+where e.codigo_producto = 'DEF777';
+
+--7. Utilizando la función CURTIME, obtén la hora actual del sistema.
+
+select CURTIME();
+
+--8. Utiliza la función DATE para extraer la fecha de envío del envío con ID 3.
+
+select e.fecha_envio,
+    DATE(e.fecha_envio)
+from envios e   
+where e.id = 3;
+
+--9. Utiliza la función DATE_ADD para calcular la fecha de entrega programada para el envío con código de producto 'XYZ789' si se le agregan 3 días a la fecha de envío.
+
+select e.fecha_entrega , 
+    DATE_ADD(e.fecha_entrega, INTERVAL 3 DAY) as "Fecha entrega programada",
+    ADDDATE(e.fecha_entrega, 5) as "Fecha entrega programada 2"
+from envios e
+where e.codigo_producto ='XYZ789';
+
+--10. Utiliza la función DATE_FORMAT para mostrar la fecha de envío del envío con ID 6 en el formato 'DD-MM-YYYY'.
+
+select e.fecha_envio,
+    DATE_FORMAT(e.fecha_envio, '%d-%m-%Y')
+from envios e   
+where e.id = 6;
