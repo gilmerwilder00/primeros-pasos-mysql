@@ -1518,3 +1518,179 @@ table vista_triangulos ;
 
 select *, angulo_alfa_grados + angulo_beta_grados as 'Suma alfa y beta'
 from vista_triangulos;
+
+--6. Reemplaza la vista y ahora agrégale dos columnas para calcular el ángulo γ en radianes y grados. Como se trata de triángulos rectángulos, el ángulo es de 90°, pero aplica una fórmula de igual manera, usa la regla de que la suma de los ángulos de un triángulo suma 180°.
+
+-- Se debe tener en cuenta que PI radianes = 180° 
+
+show databases;
+use mi_bd;
+
+CREATE OR REPLACE VIEW vista_triangulos AS
+SELECT  t_aux.angulo_alfa_grados,
+        t_aux.angulo_beta_grados,
+        (PI() - t_aux.angulo_alfa_radianes - t_aux.angulo_beta_radianes) as angulo_gamma_radianes,
+        DEGREES(PI() - t_aux.angulo_alfa_radianes - t_aux.angulo_beta_radianes) as angulo_gamma_grados
+FROM 
+    (   SELECT  t.longitud_lado_adyacente as a, 
+                t.longitud_lado_opuesto as b, 
+                SQRT( POW(t.longitud_lado_adyacente , 2) +  POW(t.longitud_lado_opuesto,2)) as c ,
+                ATAN(t.longitud_lado_opuesto / t.longitud_lado_adyacente) as angulo_alfa_radianes,
+                DEGREES(ATAN(t.longitud_lado_opuesto / t.longitud_lado_adyacente)) as angulo_alfa_grados,
+                ATAN(t.longitud_lado_adyacente / t.longitud_lado_opuesto) as angulo_beta_radianes,
+                DEGREES(ATAN(t.longitud_lado_adyacente / t.longitud_lado_opuesto)) as angulo_beta_grados
+        from triangulos_rectangulos t ) as t_aux;
+
+select * from vista_triangulos;
+
+--7. Crea una tabla triangulos_rectangulos_2 con dos columnas: angulo_alfa y una hipotenusa ambos de tipo INT.
+
+create table triangulos_rectangulos_2(
+    angulo_alfa int,
+    hipotenusa int
+);
+
+use mi_bd;
+
+describe triangulos_rectangulos_2;
+
+--8. Rellena la tabla triangulos_rectangulos_2 con 10 filas con enteros aleatorios entre 1 y 89 para angulo_alfa y enteros aleatorios entre 1 y 100 para la columna hipotenusa.
+
+insert into triangulos_rectangulos_2 (angulo_alfa, hipotenusa)
+values
+    ( floor(1 + rand()*88) , floor(1+ rand()*99) ),
+    ( floor(1 + rand()*88) , floor(1+ rand()*99) ),
+    ( floor(1 + rand()*88) , floor(1+ rand()*99) ),
+    ( floor(1 + rand()*88) , floor(1+ rand()*99) ),
+    ( floor(1 + rand()*88) , floor(1+ rand()*99) ),
+    ( floor(1 + rand()*88) , floor(1+ rand()*99) ),
+    ( floor(1 + rand()*88) , floor(1+ rand()*99) ),
+    ( floor(1 + rand()*88) , floor(1+ rand()*99) ),
+    ( floor(1 + rand()*88) , floor(1+ rand()*99) ),
+    ( floor(1 + rand()*88) , floor(1+ rand()*99) )
+;
+
+select * from triangulos_rectangulos_2;
+table triangulos_rectangulos_2;
+
+--9. Crea una vista donde agregues la columna lado_adyacente donde calcules su longitud.
+
+--consideraciones: 
+--9.1: angulo_alfa se encuentra en grados (°), angulo_beta (180° - angulo_alfa - 90°), angulo_gamma = 90°
+--9.2: Siendo el lado adyacente “A” y el opuesto “B” y la hipotenusa “C”.  C = SQRT(A^2 + B^2 )
+--9.3: En radianes: α = arcsen(B/C) = arccos(A/C) = arctan(B/A)  
+--9.4: En radianes angulo_alfa_rad: RADIANS( angulo_alfa °)
+
+-- A partir de 9.3 se usará la siguiente fórmula: α = arccos(A/C) 
+-- Esto es quivalente a: angulo_alfa_rad = arccos(lado_adyacente / hipotenusa )
+-- Se desea obtener el lado adyacente (A) y por lo tanto se debe despejar de la formula
+-- Se aplica el coseno a ambos lados: cos(angulo_alfa_rad) = cos(arccos (lado_adyacente / hipotenusa))
+-- cos(angulo_alfa_rad) =  lado_adyacente / hipotenusa
+-- Despejando el lado adyacente:  cos(angulo_alfa_rad)*hipotenusa = lado_adyacente
+-- lado_adyacente = cos(angulo_alfa_rad) * hipotenusa;
+-- lado_adyacente = cos(RADIANS(angulo_alfa))*hipotenusa;
+
+describe triangulos_rectangulos_2;
+
+create or replace view vista_triangulos_2 as
+select  t.angulo_alfa,
+        t.hipotenusa,
+        (cos(RADIANS(t.angulo_alfa))*t.hipotenusa) as lado_adyacente
+
+from triangulos_rectangulos_2 t;
+
+select * from vista_triangulos_2;
+
+--10. Agrega a la vista la columna lado_opuesto donde calcules su longitud.
+
+--consideraciones: 
+--10.1: angulo_alfa se encuentra en grados (°), angulo_beta (180° - angulo_alfa - 90°), angulo_gamma = 90°
+--10.2: Siendo el lado adyacente “A” y el opuesto “B” y la hipotenusa “C”.  C = SQRT(A^2 + B^2 )
+--10.3: En radianes: α = arcsen(B/C) = arccos(A/C) = arctan(B/A)  
+--10.4: En radianes angulo_alfa_rad: RADIANS( angulo_alfa °)
+
+-- A partir de 10.3 se usará la siguiente fórmula: α = arcsen(B/C) 
+-- Esto es quivalente a: angulo_alfa_rad = arcsen(lado_opuesto / hipotenusa )
+-- Se desea obtener el lado opuesto (B) y por lo tanto se debe despejar de la formula
+-- Se aplica el seno a ambos lados: sen(angulo_alfa_rad) = sen(arcsen (lado_opuesto / hipotenusa))
+-- sen(angulo_alfa_rad) =  lado_opuesto / hipotenusa
+-- Despejando el lado opuesto:  sen(angulo_alfa_rad)*hipotenusa = lado_opuesto
+-- lado_opuesto = sen(angulo_alfa_rad) * hipotenusa;
+-- lado_opuesto = sen(RADIANS(angulo_alfa))*hipotenusa;
+
+
+create or replace view vista_triangulos_2 as
+select  t.angulo_alfa,
+        t.hipotenusa,
+        (cos(RADIANS(t.angulo_alfa))*t.hipotenusa) as lado_adyacente,
+        (sin(RADIANS(t.angulo_alfa))*t.hipotenusa) as lado_opuesto
+
+from triangulos_rectangulos_2 t;
+
+select * from vista_triangulos_2;
+
+
+--11. Agrega a la vista la columna angulo_beta donde calcules su valor en grados.
+--consideraciones:
+--11.1: En radianes: β = arccos(B/C)= arcsen(A/C) = arctan(A/B) 
+--11.2: Siendo el lado adyacente “A” y el opuesto “B” y la hipotenusa “C”.  C = SQRT(A^2 + B^2 ) 
+--> formular a usar: β = arccos(B/C)
+--> angulo_beta_rad = arccos(lado_opuesto/hipotenusa)
+--> angulo_beta ° = DEGREES(arccos(lado_opuesto/hipotenusa));
+
+create or replace view vista_triangulos_2 as
+select  t_aux.angulo_alfa,
+        DEGREES(acos(t_aux.lado_opuesto/hipotenusa)) as angulo_beta
+from(
+    select  t.angulo_alfa,
+            t.hipotenusa,
+            (cos(RADIANS(t.angulo_alfa))*t.hipotenusa) as lado_adyacente,
+            (sin(RADIANS(t.angulo_alfa))*t.hipotenusa) as lado_opuesto
+    from triangulos_rectangulos_2 t ) t_aux;
+
+select * from vista_triangulos_2;
+
+
+--12. Agrega a la vista la columna angulo_gamma donde calcules su valor en grados.
+
+--consideraciones:
+--12.1: En grados: 90° (angulo gamma) + alfa° + beta ° = 180 °
+--12:2: En radianes: pi/2 + alfa (rad) + beta (rad) = pi 
+
+create or replace view vista_triangulos_2 as
+select  t_aux_2.angulo_alfa,
+        t_aux_2.angulo_beta,
+        (180 - t_aux_2.angulo_alfa - t_aux_2.angulo_beta) as angulo_gamma 
+from (
+    select  t_aux.angulo_alfa,
+            DEGREES(acos(t_aux.lado_opuesto/hipotenusa)) as angulo_beta
+    from (
+        select  t.angulo_alfa,
+                t.hipotenusa,
+                cos(RADIANS(t.angulo_alfa))*t.hipotenusa as lado_adyacente,
+                sin(RADIANS(t.angulo_alfa))*t.hipotenusa as lado_opuesto
+        from triangulos_rectangulos_2 t 
+    ) t_aux
+) t_aux_2;
+
+select * from vista_triangulos_2;    
+
+--13. Redondea todos los valores con hasta dos números decimales.
+
+create or replace view vista_triangulos_2 as
+select  t_aux_2.angulo_alfa,
+        t_aux_2.angulo_beta,
+        round(180 - t_aux_2.angulo_alfa - t_aux_2.angulo_beta, 2) as angulo_gamma 
+from (
+    select  t_aux.angulo_alfa,
+            round(DEGREES(acos(t_aux.lado_opuesto/hipotenusa)),2) as angulo_beta
+    from(
+        select  t.angulo_alfa,
+                t.hipotenusa,
+                round(cos(RADIANS(t.angulo_alfa))*t.hipotenusa , 2) as lado_adyacente,
+                round(sin(RADIANS(t.angulo_alfa))*t.hipotenusa , 2) as lado_opuesto
+        from triangulos_rectangulos_2 t 
+    ) t_aux
+) t_aux_2;
+
+select * from vista_triangulos_2;   
