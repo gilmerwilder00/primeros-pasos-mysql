@@ -1433,3 +1433,88 @@ select  e.fecha_envio,
 from envios e
 where e.codigo_producto = 'XYZ789';
 
+
+--Ejercicios vistas y funciones matemáticas
+
+--1. Crea una tabla triangulos_rectangulos con dos columnas: longitud_lado_adyacente y longitud lado_opuesto, ambos de tipo INT.
+
+use mi_bd;
+show tables;
+
+create table triangulos_rectangulos (
+    longitud_lado_adyacente int,
+    longitud_lado_opuesto int
+);
+
+describe triangulos_rectangulos;
+show columns from triangulos_rectangulos;
+
+--2. Rellena la tabla triangulos_rectangulos con 10 filas con enteros aleatorios entre 1 y 100
+
+-- i<=R<j - > FLOOR(i + rand()*(j-i) ),  i=1, j=100
+--revisar conceptos de floor(x), ceil(x)
+
+--copiar fila actual haci abajo : shift + alt + flecha abajo
+
+insert into triangulos_rectangulos (longitud_lado_adyacente, longitud_lado_opuesto)
+values 
+        ( FLOOR(1 + RAND()*99) ,   FLOOR(1 + RAND()*99)    ),
+        ( FLOOR(1 + RAND()*99) ,   FLOOR(1 + RAND()*99)    ),
+        ( FLOOR(1 + RAND()*99) ,   FLOOR(1 + RAND()*99)    ),
+        ( FLOOR(1 + RAND()*99) ,   FLOOR(1 + RAND()*99)    ),
+        ( FLOOR(1 + RAND()*99) ,   FLOOR(1 + RAND()*99)    ),
+        ( FLOOR(1 + RAND()*99) ,   FLOOR(1 + RAND()*99)    ),
+        ( FLOOR(1 + RAND()*99) ,   FLOOR(1 + RAND()*99)    ),
+        ( FLOOR(1 + RAND()*99) ,   FLOOR(1 + RAND()*99)    ),
+        ( FLOOR(1 + RAND()*99) ,   FLOOR(1 + RAND()*99)    ),
+        ( FLOOR(1 + RAND()*99) ,   FLOOR(1 + RAND()*99)    );
+
+select * from triangulos_rectangulos;
+table triangulos_rectangulos;
+
+--3. Crea una vista donde agregues la columna “hipotenusa” calculándola a partir de los otros dos lados. Utiliza el teorema de Pitágoras para realizar el cálculo: Siendo el lado adyacente “A” y el opuesto “B” y la hipotenusa “C” la fórmula quedaría de la siguiente forma:
+--C = SQRT(A^2 + B^2)​
+
+CREATE OR REPLACE VIEW vista_triangulos AS
+SELECT  t.longitud_lado_adyacente,
+        t.longitud_lado_opuesto,
+        SQRT( POW(t.longitud_lado_adyacente , 2) +  POW(t.longitud_lado_opuesto,2)) as 'Hipotenusa'
+from triangulos_rectangulos t;
+
+select * from vista_triangulos;
+table vista_triangulos;
+
+
+--4. Reemplaza la vista y ahora agrégale dos columnas para calcular el ángulo α en radianes y grados. Aquí tienes dos fórmulas:
+--En radianes: = arcsen(B/C) = arccos(A/C) = arctan(B/A)
+
+CREATE OR REPLACE VIEW vista_triangulos AS
+SELECT  t.longitud_lado_adyacente, --A
+        t.longitud_lado_opuesto, --B
+        SQRT( POW(t.longitud_lado_adyacente , 2) +  POW(t.longitud_lado_opuesto,2)) as 'Hipotenusa',
+        ATAN(t.longitud_lado_opuesto / t.longitud_lado_adyacente) as 'Angulo alfa en radianes',
+        DEGREES(ATAN(t.longitud_lado_opuesto / t.longitud_lado_adyacente)) as 'Angulo alfa en grados'
+from triangulos_rectangulos t;
+
+
+table vista_triangulos ;
+select * from vista_triangulos order by 1;
+
+--5. Reemplaza la vista y ahora agrégale dos columnas para calcular el ángulo β en radianes y grados. Aquí tienes dos fórmulas:
+--En radianes: β = arccos(B/C)=arcsen(A/C) = arctan(A/B)  
+
+
+CREATE OR REPLACE VIEW vista_triangulos AS
+SELECT  t.longitud_lado_adyacente, 
+        t.longitud_lado_opuesto, 
+        SQRT( POW(t.longitud_lado_adyacente , 2) +  POW(t.longitud_lado_opuesto,2)) as 'Hipotenusa',
+        ATAN(t.longitud_lado_opuesto / t.longitud_lado_adyacente) as angulo_alfa_radianes,
+        DEGREES(ATAN(t.longitud_lado_opuesto / t.longitud_lado_adyacente)) as angulo_alfa_grados,
+        ATAN(t.longitud_lado_adyacente / t.longitud_lado_opuesto) as angulo_beta_radianes,
+        DEGREES(ATAN(t.longitud_lado_adyacente / t.longitud_lado_opuesto)) as angulo_beta_grados
+from triangulos_rectangulos t;
+
+table vista_triangulos ;
+
+select *, angulo_alfa_grados + angulo_beta_grados as 'Suma alfa y beta'
+from vista_triangulos;
